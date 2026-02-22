@@ -1,0 +1,35 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/mfa:$SHORT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/mfa:latest'
+      - '.'
+    timeout: '1200s'
+
+  # Step 2: Push image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/mfa:$SHORT_SHA'
+    timeout: '600s'
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    args:
+      - run
+      - --filename=clouddeploy/
+      - --location=us-central1
+      - '--client=kubectl'
+
+images:
+  - 'gcr.io/$PROJECT_ID/mfa:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/mfa:latest'
+
+timeout: '3600s'
+
+options:
+  machineType: 'N1_HIGHCPU_8'

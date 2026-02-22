@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutual Fund Data Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 12a9 9 0 0110-8.94A9 9 0 1112 22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="12" y1="12" x2="12" y2="2" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="12" y1="12" x2="19" y2="12" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <h1>Mutual Fund Analyzer</h1>
+                </div>
+                <p class="subtitle">Professional Financial Data Analysis Platform</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="section input-section">
+                <div class="section-header">
+                    <h2>Fetch Fund Data</h2>
+                    <p>Enter the fund details to analyze</p>
+                </div>
+
+                <form id="dataForm" class="form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fundName">Fund Name</label>
+                            <input 
+                                type="text" 
+                                id="fundName" 
+                                placeholder="e.g., HDFC, SBI, Axis..."
+                                class="input-field"
+                                required
+                            >
+                            <p class="form-hint">Enter any fund company name or scheme name</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input 
+                                type="date" 
+                                id="startDate"
+                                class="input-field"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input 
+                                type="date" 
+                                id="endDate"
+                                class="input-field"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-fetch">
+                        <span class="btn-text">Fetch Data</span>
+                        <span class="btn-loader" style="display: none;">
+                            <span class="spinner"></span> Processing...
+                        </span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Data Preview Section -->
+            <section class="section preview-section" id="previewSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Data Preview</h2>
+                    <p id="recordCount" class="record-info"></p>
+                </div>
+
+                <div class="preview-container">
+                    <table class="data-table" id="dataTable">
+                        <thead>
+                            <tr id="tableHeader"></tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Projections & Analytics Section -->
+            <section class="section projections-section" id="projectionsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Analytics & Projections</h2>
+                    <p>Historical performance and 30-day NAV forecast</p>
+                </div>
+
+                <div class="charts-container">
+                    <!-- NAV Chart -->
+                    <div class="chart-wrapper">
+                        <h3>NAV Trend & Projection</h3>
+                        <div class="chart-inner">
+                            <canvas id="navChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Performance Metrics Chart -->
+                    <div class="chart-wrapper">
+                        <h3>Performance Metrics</h3>
+                        <div class="chart-inner">
+                            <canvas id="metricsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics Display -->
+                <div class="metrics-display" id="metricsDisplay" style="display: none;">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <h4>Current NAV</h4>
+                            <p class="metric-value" id="currentNav">--</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>Total Return</h4>
+                            <p class="metric-value" id="totalReturn">--</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>Volatility</h4>
+                            <p class="metric-value" id="volatility">--</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>Sharpe Ratio</h4>
+                            <p class="metric-value" id="sharpeRatio">--</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Export Section -->
+            <section class="section export-section" id="exportSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Export Options</h2>
+                    <p>Generate reports in your preferred format</p>
+                </div>
+
+                <div class="export-grid">
+                    <div class="export-card">
+                        <div class="export-icon pdf-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 2v6h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="12" y1="19" x2="12" y2="11" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M9 16h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3>Generate PDF</h3>
+                        <p>Create a formatted PDF report</p>
+                        <button type="button" class="btn btn-secondary btn-pdf">
+                            <span class="btn-text">Generate PDF</span>
+                            <span class="btn-loader" style="display: none;">
+                                <span class="spinner"></span> Generating...
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="export-card">
+                        <div class="export-icon excel-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 6h18v12H3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M3 10h18M3 14h18M7 6v12M11 6v12M15 6v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3>Generate Excel</h3>
+                        <p>Export data for detailed analysis</p>
+                        <button type="button" class="btn btn-secondary btn-excel">
+                            <span class="btn-text">Generate Excel</span>
+                            <span class="btn-loader" style="display: none;">
+                                <span class="spinner"></span> Generating...
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="export-card">
+                        <div class="export-icon convert-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M8 7L4 11l4 4M16 7l4 4-4 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3>PDF to Excel</h3>
+                        <p>Convert PDF table to Excel sheet</p>
+                        <button type="button" class="btn btn-secondary btn-convert" style="opacity: 0.5; cursor: not-allowed;" disabled>
+                            <span class="btn-text">Convert PDF</span>
+                            <span class="btn-loader" style="display: none;">
+                                <span class="spinner"></span> Converting...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status Messages -->
+            <div id="alertContainer" class="alert-container"></div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>A Capstone Project Made By Anand Kanchi</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

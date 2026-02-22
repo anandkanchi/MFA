@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: mfa-web
+    ports:
+      - "5000:8080"
+    environment:
+      FLASK_APP: run.py
+      FLASK_ENV: development
+      DEBUG: "False"
+    volumes:
+      - ./app:/app/app
+      - ./data:/app/data
+      - ./templates:/app/templates
+      - ./static:/app/static
+    command: flask run --host=0.0.0.0 --port=8080
+    networks:
+      - mfa-network
+
+networks:
+  mfa-network:
+    driver: bridge

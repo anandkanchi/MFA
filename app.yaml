@@ -1,0 +1,30 @@
+runtime: python311
+
+entrypoint: gunicorn --bind 0.0.0.0:$PORT --timeout 120 --workers 4 --threads 2 --worker-class gthread run:app
+
+env: standard
+
+env_variables:
+  FLASK_ENV: "production"
+  DEBUG: "False"
+
+handlers:
+- url: /static
+  static_dir: app/static
+  secure: always
+
+- url: /.*
+  script: auto
+  secure: always
+
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+
+inbound_services:
+  - warmup
+
+skip_files:
+  - ^(.git|.gitignore|.venv)/?$
+  - ^(__pycache__|venv|\.pytest_cache)/?$
+  - ^\..*
