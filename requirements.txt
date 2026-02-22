@@ -1,6 +1,6 @@
 Flask==3.0.0
 Werkzeug==3.0.0
-mftool==0.3.2
+mftool==3.0
 pandas==2.0.0
 fpdf2==2.7.0
 tabula-py==2.5.0
