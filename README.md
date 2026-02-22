@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Mutual Fund Data Analyzer - Capstone Project
 
 A professional web application for analyzing mutual fund data with PDF generation and Excel export capabilities.
@@ -206,3 +207,6 @@ Proprietary - All Rights Reserved
 ---
 
 **Questions or Issues?** Review logs in the console and check the API responses in browser DevTools.
+=======
+# MFA
+>>>>>>> c15c6da90f2cb7341d35348b3690e59f366401fe
